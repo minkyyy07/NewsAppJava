@@ -12,16 +12,15 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.example.model.NewsArticle;
+import org.example.NewsArticle;
 import org.example.service.NewsService;
 
 import java.util.concurrent.CompletableFuture;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class App extends Application {
+public class Main extends Application {
     private final NewsService service = new NewsService();
     private final ObservableList<NewsArticle> items = FXCollections.observableArrayList();
 
@@ -35,12 +34,12 @@ public class App extends Application {
     private ProgressIndicator progress;
 
     @Override
-    public void start(Start stage) {
+    public void start(Stage stage) {
         TextField searchField = new TextField();
         searchField.setPromptText("Searching...");
         Button searchBtn = new Button("Search");
-        Button resetBtn = new Button("Update");
-        HBox searchBox = new HBox(8, searchField, searchBtn, resetBtn);
+        Button refreshBtn = new Button("Refresh");
+        HBox top = new HBox(8, searchField, searchBtn, refreshBtn);
         top.setAlignment(Pos.CENTER_LEFT);
         top.setPadding(new Insets(10));
         HBox.setHgrow(searchField, Priority.ALWAYS);
@@ -65,7 +64,7 @@ public class App extends Application {
                 m.setStyle("-fx-fill: -fx-text-inner-color; -fx-opacity: 0.7;");
                 Text d = new Text(desc);
                 d.setWrappingWidth(600);
-                Vbox v = new VBox(2, t, m, d);
+                VBox v = new VBox(2, t, m, d);
                 v.setPadding(new Insets(8));
                 setGraphic(v);
             }
@@ -73,7 +72,7 @@ public class App extends Application {
         listView.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() == 2) {
                 NewsArticle sel = listView.getSelectionModel().getSelectedItem();
-                if (sel != null && sel.getUrl() != null) {
+                if (sel != null && sel.getUrl() != null && !sel.getUrl().isBlank()) {
                     getHostServices().showDocument(sel.getUrl());
                 }
             }
@@ -105,7 +104,7 @@ public class App extends Application {
         loadPage(true);
     }
 
-    private void loadPage (boolean reset) {
+    private void loadPage(boolean reset) {
         if (loading) return;
         loading = true;
         progress.setVisible(true);
