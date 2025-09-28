@@ -1,5 +1,7 @@
+// Java
 package org.example;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -15,6 +17,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.example.NewsArticle;
 import org.example.service.NewsService;
 
@@ -29,6 +32,7 @@ public class Main extends Application {
     private boolean loading = false;
     private boolean hasNext = true;
     private String currentQuery = "";
+    private String currentCategory = "Все"; // Все | Политика | Спорт
 
     private Button loadMoreBtn;
     private ProgressIndicator progress;
@@ -36,15 +40,20 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         TextField searchField = new TextField();
-        searchField.setPromptText("Searching...");
-        Button searchBtn = new Button("Search");
-        Button refreshBtn = new Button("Refresh");
-        HBox top = new HBox(8, searchField, searchBtn, refreshBtn);
+        searchField.setPromptText("Поиск новостей...");
+        Button searchBtn = new Button("Искать");
+        Button refreshBtn = new Button("Обновить");
+        ComboBox<String> categoryBox = new ComboBox<>(FXCollections.observableArrayList("Все", "Политика", "Спорт"));
+        categoryBox.getSelectionModel().select("Все");
+        categoryBox.setPrefWidth(140);
+
+        HBox top = new HBox(8, categoryBox, searchField, searchBtn, refreshBtn);
         top.setAlignment(Pos.CENTER_LEFT);
         top.setPadding(new Insets(10));
         HBox.setHgrow(searchField, Priority.ALWAYS);
 
         ListView<NewsArticle> listView = new ListView<>(items);
+        listView.setPlaceholder(new Label("Нет новостей"));
         listView.setCellFactory(v -> new ListCell<>() {
             @Override
             protected void updateItem(NewsArticle a, boolean empty) {
@@ -67,6 +76,11 @@ public class Main extends Application {
                 VBox v = new VBox(2, t, m, d);
                 v.setPadding(new Insets(8));
                 setGraphic(v);
+
+                // Автодогрузка при прокрутке к концу
+                if (getIndex() >= Main.this.items.size() - 5 && Main.this.hasNext && !Main.this.loading) {
+                    Main.this.loadPage(false);
+                }
             }
         });
         listView.setOnMouseClicked(e -> {
@@ -78,8 +92,12 @@ public class Main extends Application {
             }
         });
 
-        loadMoreBtn = new Button("Load More");
+        loadMoreBtn = new Button("Загрузить ещё");
         loadMoreBtn.setOnAction(e -> loadPage(false));
+        // Спрятать кнопку, если используем автоподгрузку
+        loadMoreBtn.setVisible(false);
+        loadMoreBtn.setManaged(false);
+
         progress = new ProgressIndicator();
         progress.setVisible(false);
         HBox bottom = new HBox(10, loadMoreBtn, progress);
@@ -91,13 +109,28 @@ public class Main extends Application {
         root.setCenter(listView);
         root.setBottom(bottom);
 
+        // Поиск: дебаунс + Enter
+        PauseTransition searchDebounce = new PauseTransition(Duration.millis(350));
+        searchField.textProperty().addListener((obs, oldV, newV) -> {
+            currentQuery = newV == null ? "" : newV.trim();
+            searchDebounce.stop();
+            searchDebounce.setOnFinished(ev -> loadPage(true));
+            searchDebounce.playFromStart();
+        });
+        searchField.setOnAction(e -> loadPage(true));
+
         searchBtn.setOnAction(e -> {
             currentQuery = searchField.getText() == null ? "" : searchField.getText().trim();
             loadPage(true);
         });
         refreshBtn.setOnAction(e -> loadPage(true));
 
-        stage.setTitle("News");
+        categoryBox.valueProperty().addListener((obs, oldV, newV) -> {
+            currentCategory = newV == null ? "Все" : newV;
+            loadPage(true);
+        });
+
+        stage.setTitle("Новости");
         stage.setScene(new Scene(root, 800, 600));
         stage.show();
 
@@ -124,7 +157,7 @@ public class Main extends Application {
 
         int pageToLoad = page;
         CompletableFuture
-                .supplyAsync(() -> service.fetchPage(currentQuery, pageToLoad, pageSize))
+                .supplyAsync(() -> service.fetchPage(currentCategory, currentQuery, pageToLoad, pageSize))
                 .whenComplete((result, error) -> Platform.runLater(() -> {
                     try {
                         if (error != null) {

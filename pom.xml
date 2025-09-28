@@ -34,6 +34,14 @@
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
                     <mainClass>org.example.Main</mainClass>
+                    <!-- Имя лаунчера для jlink/jpackage -->
+                    <launcher>news-app</launcher>
+                    <!-- Подавляем предупреждение про native access в JavaFX 21+ -->
+                    <jvmArgs>--enable-native-access=javafx.graphics</jvmArgs>
+                    <!-- Создание компактного runtime-образа -->
+                    <stripDebug>true</stripDebug>
+                    <noHeaderFiles>true</noHeaderFiles>
+                    <noManPages>true</noManPages>
                 </configuration>
             </plugin>
         </plugins>
