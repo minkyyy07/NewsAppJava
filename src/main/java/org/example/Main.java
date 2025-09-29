@@ -47,10 +47,24 @@ public class Main extends Application {
         categoryBox.getSelectionModel().select("Все");
         categoryBox.setPrefWidth(140);
 
+        // --- Modern header/title ---
+        Label header = new Label("NewsApp");
+        header.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2d3436; -fx-padding: 16 0 8 0;");
+        HBox headerBox = new HBox(header);
+        headerBox.setAlignment(Pos.CENTER);
+        headerBox.setStyle("-fx-background-color: #f5f6fa; -fx-border-color: #dfe6e9; -fx-border-width: 0 0 1 0;");
+
         HBox top = new HBox(8, categoryBox, searchField, searchBtn, refreshBtn);
         top.setAlignment(Pos.CENTER_LEFT);
         top.setPadding(new Insets(10));
         HBox.setHgrow(searchField, Priority.ALWAYS);
+
+        // --- Modernize top controls ---
+        top.setStyle("-fx-background-color: #f5f6fa; -fx-border-color: #dfe6e9; -fx-border-width: 0 0 1 0; -fx-padding: 16 16 16 16;");
+        searchField.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 6 12; -fx-background-color: #fff; -fx-border-color: #b2bec3;");
+        searchBtn.setStyle("-fx-background-radius: 8; -fx-background-color: #0984e3; -fx-text-fill: white; -fx-font-weight: bold;");
+        refreshBtn.setStyle("-fx-background-radius: 8; -fx-background-color: #636e72; -fx-text-fill: white; -fx-font-weight: bold;");
+        categoryBox.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-background-color: #fff; -fx-border-color: #b2bec3;");
 
         ListView<NewsArticle> listView = new ListView<>(items);
         listView.setPlaceholder(new Label("Нет новостей"));
@@ -61,6 +75,7 @@ public class Main extends Application {
                 if (empty || a == null) {
                     setText(null);
                     setGraphic(null);
+                    setStyle("");
                     return;
                 }
                 String title = a.getTitle();
@@ -68,15 +83,19 @@ public class Main extends Application {
                         (a.getPublishedAt() != null ? " • " + a.getPublishedAt() : "");
                 String desc = a.getSummary() != null ? a.getSummary() : "";
                 Text t = new Text(title);
-                t.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+                t.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-fill: #222f3e;");
                 Text m = new Text(meta);
-                m.setStyle("-fx-fill: -fx-text-inner-color; -fx-opacity: 0.7;");
+                m.setStyle("-fx-fill: #636e72; -fx-font-size: 11px;");
                 Text d = new Text(desc);
                 d.setWrappingWidth(600);
+                d.setStyle("-fx-fill: #636e72;");
                 VBox v = new VBox(2, t, m, d);
-                v.setPadding(new Insets(8));
+                v.setPadding(new Insets(10));
+                v.setStyle("-fx-background-color: #fff; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #dfe6e9; -fx-border-width: 1; -fx-effect: dropshadow(three-pass-box, rgba(44,62,80,0.07), 4, 0, 0, 2);");
                 setGraphic(v);
-
+                setStyle("-fx-padding: 6 12 6 12;");
+                setOnMouseEntered(ev -> v.setStyle("-fx-background-color: #dfe6e9; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #b2bec3; -fx-border-width: 1;"));
+                setOnMouseExited(ev -> v.setStyle("-fx-background-color: #fff; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #dfe6e9; -fx-border-width: 1; -fx-effect: dropshadow(three-pass-box, rgba(44,62,80,0.07), 4, 0, 0, 2);"));
                 // Автодогрузка при прокрутке к концу
                 if (getIndex() >= Main.this.items.size() - 5 && Main.this.hasNext && !Main.this.loading) {
                     Main.this.loadPage(false);
@@ -92,22 +111,39 @@ public class Main extends Application {
             }
         });
 
+        // --- Modernize ListView ---
+        listView.setStyle("-fx-background-color: #f5f6fa;");
+
         loadMoreBtn = new Button("Загрузить ещё");
         loadMoreBtn.setOnAction(e -> loadPage(false));
-        // Спрятать кнопку, если используем автоподгрузку
-        loadMoreBtn.setVisible(false);
-        loadMoreBtn.setManaged(false);
+        loadMoreBtn.setStyle("-fx-background-radius: 8; -fx-background-color: #00b894; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 24;");
+
+        VBox centerBox = new VBox(listView, loadMoreBtn);
+        centerBox.setSpacing(8);
+        centerBox.setPadding(new Insets(8, 16, 16, 16));
+        VBox.setVgrow(listView, Priority.ALWAYS);
+
+        // --- Layout with header ---
+        BorderPane root = new BorderPane();
+        root.setTop(new VBox(headerBox, top));
+        root.setCenter(centerBox);
 
         progress = new ProgressIndicator();
         progress.setVisible(false);
-        HBox bottom = new HBox(10, loadMoreBtn, progress);
-        bottom.setAlignment(Pos.CENTER);
-        bottom.setPadding(new Insets(10));
+        VBox progressBox = new VBox(progress);
+        progressBox.setAlignment(Pos.CENTER);
+        progressBox.setPadding(new Insets(16));
+        root.setBottom(progressBox);
 
-        BorderPane root = new BorderPane();
-        root.setTop(top);
-        root.setCenter(listView);
-        root.setBottom(bottom);
+        Scene scene = new Scene(root, 800, 650);
+        // Attach CSS if available
+        var cssUrl = getClass().getResource("/modern.css");
+        if (cssUrl != null) {
+            scene.getStylesheets().add(cssUrl.toExternalForm());
+        }
+        stage.setScene(scene);
+        stage.setTitle("NewsApp");
+        stage.show();
 
         // Поиск: дебаунс + Enter
         PauseTransition searchDebounce = new PauseTransition(Duration.millis(350));
@@ -129,10 +165,6 @@ public class Main extends Application {
             currentCategory = newV == null ? "Все" : newV;
             loadPage(true);
         });
-
-        stage.setTitle("Новости");
-        stage.setScene(new Scene(root, 800, 600));
-        stage.show();
 
         loadPage(true);
     }

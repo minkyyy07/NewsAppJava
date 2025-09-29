@@ -1,0 +1,39 @@
+/* modern.css - Modern UI for NewsApp */
+
+.root {
+    -fx-font-family: 'Segoe UI', 'Arial', sans-serif;
+    -fx-background-color: #f5f6fa;
+}
+
+.label {
+    -fx-font-smoothing-type: lcd;
+}
+
+.button {
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(44,62,80,0.04), 2, 0, 0, 1);
+}
+
+.text-field, .combo-box {
+    -fx-font-size: 14px;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #b2bec3;
+    -fx-padding: 6 12;
+}
+
+.list-cell:filled:selected, .list-cell:filled:focused {
+    -fx-background-color: #dfe6e9;
+    -fx-background-radius: 10;
+}
+
+.list-cell {
+    -fx-padding: 6 12 6 12;
+    -fx-background-color: transparent;
+}
+
+.progress-indicator {
+    -fx-progress-color: #0984e3;
+}

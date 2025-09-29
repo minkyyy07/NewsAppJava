@@ -107,7 +107,7 @@ public class NewsService {
         List<NewsArticle> articles = pageSlice.stream()
                 .map(n -> new NewsArticle(
                         orEmpty(n.title),
-                        orEmpty(n.summary),
+                        stripHtml(orEmpty(n.summary)),
                         orEmpty(n.link),
                         orEmpty(n.source),
                         n.publishedAt == null ? "" : n.publishedAt,
@@ -133,6 +133,8 @@ public class NewsService {
     private List<NewsRecord> fetchFeed(String url) throws Exception {
         HttpRequest req = HttpRequest.newBuilder(URI.create(url))
                 .timeout(Duration.ofSeconds(15))
+                .header("User-Agent", "NewsApp/1.0 (+https://localhost)")
+                .header("Accept", "application/rss+xml, application/xml;q=0.9, */*;q=0.8")
                 .GET()
                 .build();
         HttpResponse<byte[]> res = client.send(req, HttpResponse.BodyHandlers.ofByteArray());
@@ -288,6 +290,17 @@ public class NewsService {
 
     private static String orEmpty(String s) { return s == null ? "" : s; }
 
+    private static String stripHtml(String s) {
+        if (s == null || s.isBlank()) return "";
+        String noTags = s.replaceAll("<[^>]+>", " ");
+        // Простейшая декодировка часто встречающихся сущностей
+        noTags = noTags.replace("&nbsp;", " ")
+                .replace("&amp;", "&")
+                .replace("&lt;", "<")
+                .replace("&gt;", ">");
+        return noTags.replaceAll("\n{3,}", "\n\n").trim();
+    }
+
     public record PageResult(List<NewsArticle> articles, boolean hasNext) {}
 
     private static class NewsRecord {
@@ -307,3 +320,4 @@ public class NewsService {
         }
     }
 }
+
