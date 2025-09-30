@@ -5,6 +5,25 @@
     -fx-background-color: #f5f6fa;
 }
 
+/* Dark theme toggle via adding class 'dark' to root */
+.root.dark {
+    -fx-background-color: #1e272e;
+}
+.root.dark .label {
+    -fx-text-fill: #dfe6e9;
+}
+.root.dark .text-field, .root.dark .combo-box {
+    -fx-background-color: #2f3640;
+    -fx-text-fill: #ecf0f1;
+    -fx-border-color: #57606f;
+}
+.root.dark .button {
+    -fx-effect: none;
+}
+.root.dark .list-view {
+    -fx-background-color: #1e272e;
+}
+
 .label {
     -fx-font-smoothing-type: lcd;
 }
@@ -34,6 +53,46 @@
     -fx-background-color: transparent;
 }
 
+/* Card styling and hover moved from code to CSS */
+.card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #dfe6e9;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(44,62,80,0.07), 4, 0, 0, 2);
+}
+.card:hover {
+    -fx-background-color: #dfe6e9;
+    -fx-border-color: #b2bec3;
+}
+.root.dark .card {
+    -fx-background-color: #2f3640;
+    -fx-border-color: #3d3d3d;
+    -fx-effect: none;
+}
+.root.dark .card:hover {
+    -fx-background-color: #353b48;
+    -fx-border-color: #4b4b4b;
+}
+
 .progress-indicator {
     -fx-progress-color: #0984e3;
+}
+
+/* Status bar */
+.status-bar {
+    -fx-background-color: linear-gradient(to bottom, rgba(223,230,233,0.6), rgba(223,230,233,0.2));
+    -fx-border-color: #dfe6e9;
+    -fx-border-width: 1 0 0 0;
+}
+.root.dark .status-bar {
+    -fx-background-color: linear-gradient(to bottom, rgba(53,59,72,0.8), rgba(47,54,64,0.4));
+    -fx-border-color: #3d3d3d;
+}
+.status-label {
+    -fx-text-fill: #636e72;
+}
+.root.dark .status-label {
+    -fx-text-fill: #b2bec3;
 }
