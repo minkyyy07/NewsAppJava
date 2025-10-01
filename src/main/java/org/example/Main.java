@@ -1,12 +1,6 @@
 // Java
 package org.example;
 
-import javafx.animation.FadeTransition;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.layout.Region;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -26,15 +20,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.example.NewsArticle;
 import org.example.service.NewsService;
+
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
-
-import java.util.concurrent.CompletableFuture;
 
 public class Main extends Application {
     private final NewsService service = new NewsService();
@@ -45,7 +38,6 @@ public class Main extends Application {
         t.setDaemon(true);
         return t;
     });
-    private final AtomicLong nextId = new AtomicLong();
     private final AtomicLong requestId = new AtomicLong();
 
     private int page = 0;
@@ -65,33 +57,33 @@ public class Main extends Application {
         searchField.setPromptText("Поиск новостей...");
         Button searchBtn = new Button("Искать");
         Button refreshBtn = new Button("Обновить");
-        ComboBox<String> categoryBox = new ComboBox<>(FXCollections.observableArrayList("Все", "Политика", "Спорт"));
+        ComboBox<String> categoryBox = new ComboBox<>(FXCollections.observableArrayList(
+            "Все", "Политика", "Спорт", "Технологии", "Наука", "Бизнес", "Здоровье"));
         categoryBox.getSelectionModel().select("Все");
         categoryBox.setPrefWidth(140);
         CheckBox darkToggle = new CheckBox("Тёмная тема");
 
-        // --- Modern header/title ---
+        // --- Header ---
         Label header = new Label("NewsApp");
-        header.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2d3436; -fx-padding: 16 0 8 0;");
+        header.getStyleClass().add("header-title");
         HBox headerBox = new HBox(header);
         headerBox.setAlignment(Pos.CENTER);
-        headerBox.setStyle("-fx-background-color: #f5f6fa; -fx-border-color: #dfe6e9; -fx-border-width: 0 0 1 0;");
+        headerBox.getStyleClass().add("header-box");
 
         HBox top = new HBox(8, categoryBox, searchField, searchBtn, refreshBtn, darkToggle);
         top.setAlignment(Pos.CENTER_LEFT);
         top.setPadding(new Insets(10));
         HBox.setHgrow(searchField, Priority.ALWAYS);
+        top.getStyleClass().add("toolbar");
 
-        // --- Modernize top controls ---
-        top.setStyle("-fx-background-color: #f5f6fa; -fx-border-color: #dfe6e9; -fx-border-width: 0 0 1 0; -fx-padding: 16 16 16 16;");
-        searchField.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 6 12; -fx-background-color: #fff; -fx-border-color: #b2bec3;");
-        searchBtn.setStyle("-fx-background-radius: 8; -fx-background-color: #0984e3; -fx-text-fill: white; -fx-font-weight: bold;");
-        refreshBtn.setStyle("-fx-background-radius: 8; -fx-background-color: #636e72; -fx-text-fill: white; -fx-font-weight: bold;");
-        categoryBox.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-background-color: #fff; -fx-border-color: #b2bec3;");
+        // Стили через CSS классы
+        searchBtn.getStyleClass().addAll("btn", "btn-primary");
+        refreshBtn.getStyleClass().addAll("btn", "btn-secondary");
 
         ListView<NewsArticle> listView = new ListView<>(items);
         // Улучшенный плейсхолдер
         Button resetBtn = new Button("Сбросить поиск");
+        resetBtn.getStyleClass().addAll("btn", "btn-secondary");
         resetBtn.setOnAction(e -> {
             searchField.clear();
             categoryBox.getSelectionModel().select("Все");
@@ -120,13 +112,14 @@ public class Main extends Application {
                 String meta = (a.getSource() != null ? a.getSource() : "") +
                         (a.getPublishedAt() != null ? " • " + a.getPublishedAt() : "");
                 String desc = a.getSummary() != null ? a.getSummary() : "";
+
                 Text t = new Text(title);
-                t.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-fill: #222f3e;");
+                t.getStyleClass().add("title-text");
                 Text m = new Text(meta);
-                m.setStyle("-fx-fill: #636e72; -fx-font-size: 11px;");
+                m.getStyleClass().add("meta-text");
                 Text d = new Text(desc);
                 d.wrappingWidthProperty().bind(listView.widthProperty().subtract(48));
-                d.setStyle("-fx-fill: #636e72;");
+                d.getStyleClass().add("desc-text");
                 VBox card = new VBox(2, t, m, d);
                 card.setPadding(new Insets(10));
                 card.getStyleClass().add("card");
@@ -165,19 +158,15 @@ public class Main extends Application {
             }
         });
 
-        // --- Modernize ListView ---
-        listView.setStyle("-fx-background-color: #f5f6fa;");
-
         loadMoreBtn = new Button("Загрузить ещё");
         loadMoreBtn.setOnAction(e -> loadPage(false));
-        loadMoreBtn.setStyle("-fx-background-radius: 8; -fx-background-color: #00b894; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 24;");
+        loadMoreBtn.getStyleClass().addAll("btn", "btn-success");
 
         VBox centerBox = new VBox(listView, loadMoreBtn);
         centerBox.setSpacing(8);
         centerBox.setPadding(new Insets(8, 16, 16, 16));
         VBox.setVgrow(listView, Priority.ALWAYS);
 
-        // --- Layout with header ---
         BorderPane root = new BorderPane();
         root.setTop(new VBox(headerBox, top));
         root.setCenter(centerBox);
@@ -196,7 +185,6 @@ public class Main extends Application {
         root.setBottom(statusBar);
 
         Scene scene = new Scene(root, 800, 650);
-        // Attach CSS if available
         var cssUrl = getClass().getResource("/modern.css");
         if (cssUrl != null) {
             scene.getStylesheets().add(cssUrl.toExternalForm());
@@ -322,4 +310,3 @@ public class Main extends Application {
         launch(args);
     }
 }
-

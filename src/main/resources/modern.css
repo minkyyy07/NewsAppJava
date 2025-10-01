@@ -1,98 +1,336 @@
-/* modern.css - Modern UI for NewsApp */
-
+/* Базовые переменные для светлой темы */
 .root {
-    -fx-font-family: 'Segoe UI', 'Arial', sans-serif;
-    -fx-background-color: #f5f6fa;
+  /* Основная цветовая схема */
+  -fx-accent: #0984e3;
+  -fx-focus-color: #0984e3;
+  -fx-default-button: #0984e3;
+
+  /* Цвета фона */
+  -fx-app-bg: #f5f6fa;
+  -fx-header-bg: linear-gradient(to bottom, #ffffff, #f5f6fa);
+  -fx-toolbar-bg: #ffffff;
+  -fx-card-bg: #ffffff;
+  -fx-status-bg: rgba(240, 242, 245, 0.95);
+
+  /* Цвета границ */
+  -fx-border-light: #dfe6e9;
+  -fx-border-medium: #b2bec3;
+
+  /* Цвета текста */
+  -fx-text-base: #2d3436;
+  -fx-text-header: #222f3e;
+  -fx-text-muted: #636e72;
+
+  /* Состояния карточек */
+  -fx-card-hover-bg: #dfe6e9;
+  -fx-card-hover-border: #b2bec3;
+
+  -fx-background-color: -fx-app-bg;
 }
 
-/* Dark theme toggle via adding class 'dark' to root */
+/* Переменные для тёмной темы */
 .root.dark {
-    -fx-background-color: #1e272e;
-}
-.root.dark .label {
-    -fx-text-fill: #dfe6e9;
-}
-.root.dark .text-field, .root.dark .combo-box {
-    -fx-background-color: #2f3640;
-    -fx-text-fill: #ecf0f1;
-    -fx-border-color: #57606f;
-}
-.root.dark .button {
-    -fx-effect: none;
-}
-.root.dark .list-view {
-    -fx-background-color: #1e272e;
+  /* Основная цветовая схема */
+  -fx-accent: #74b9ff;
+  -fx-focus-color: #74b9ff;
+  -fx-default-button: #0984e3;
+
+  /* Цвета фона */
+  -fx-app-bg: #1a1d21;
+  -fx-header-bg: linear-gradient(to bottom, #2c3e50, #1a1d21);
+  -fx-toolbar-bg: #2c3e50;
+  -fx-card-bg: #2c3e50;
+  -fx-status-bg: rgba(29, 35, 42, 0.95);
+
+  /* Цвета границ */
+  -fx-border-light: #3a4148;
+  -fx-border-medium: #4a5159;
+
+  /* Цвета текста */
+  -fx-text-base: #ffffff;
+  -fx-text-header: #ecf0f1;
+  -fx-text-muted: #b2bec3;
+
+  /* Состояния карточек */
+  -fx-card-hover-bg: #34495e;
+  -fx-card-hover-border: #4a5159;
 }
 
-.label {
-    -fx-font-smoothing-type: lcd;
+/* Шапка */
+.header-box {
+  -fx-background-color: -fx-header-bg;
+  -fx-border-color: -fx-border-light;
+  -fx-border-width: 0 0 1 0;
+  -fx-padding: 16 0 12 0;
 }
 
-.button {
-    -fx-cursor: hand;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-effect: dropshadow(three-pass-box, rgba(44,62,80,0.04), 2, 0, 0, 1);
+.header-title {
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -fx-text-header;
 }
 
-.text-field, .combo-box {
-    -fx-font-size: 14px;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-    -fx-border-color: #b2bec3;
-    -fx-padding: 6 12;
+/* Панель инструментов */
+.toolbar {
+  -fx-background-color: -fx-toolbar-bg;
+  -fx-border-color: -fx-border-light;
+  -fx-border-width: 0 0 1 0;
+  -fx-padding: 12 16;
 }
 
-.list-cell:filled:selected, .list-cell:filled:focused {
-    -fx-background-color: #dfe6e9;
-    -fx-background-radius: 10;
+/* Базовые стили для кнопок */
+.btn {
+  -fx-background-radius: 8px;
+  -fx-padding: 8px 16px;
+  -fx-cursor: hand;
+  -fx-font-weight: bold;
+  -fx-background-insets: 0;
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 2, 0, 0, 1);
+  -fx-transition: all 0.2s ease;
+}
+
+.btn:hover {
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 4, 0, 0, 2);
+  -fx-scale-x: 1.02;
+  -fx-scale-y: 1.02;
+}
+
+.btn:pressed {
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 1, 0, 0, 0);
+  -fx-scale-x: 0.98;
+  -fx-scale-y: 0.98;
+}
+
+/* Специфические кнопки */
+.btn-primary {
+  -fx-background-color: #0984e3;
+  -fx-text-fill: white;
+}
+
+.btn-primary:hover {
+  -fx-background-color: #0078d4;
+}
+
+.btn-secondary {
+  -fx-background-color: #636e72;
+  -fx-text-fill: white;
+}
+
+.btn-secondary:hover {
+  -fx-background-color: #4a5459;
+}
+
+.btn-success {
+  -fx-background-color: #00b894;
+  -fx-text-fill: white;
+}
+
+.btn-success:hover {
+  -fx-background-color: #00a384;
+}
+
+/* Текстовые поля */
+.text-field {
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-padding: 8px 12px;
+  -fx-background-color: white;
+  -fx-border-color: -fx-border-medium;
+  -fx-prompt-text-fill: -fx-text-muted;
+  -fx-text-fill: -fx-text-base;
+}
+
+.root.dark .text-field {
+  -fx-background-color: #34495e;
+  -fx-border-color: #4a5159;
+  -fx-text-fill: white;
+  -fx-prompt-text-fill: #b2bec3;
+}
+
+/* ComboBox */
+.combo-box {
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-background-color: white;
+  -fx-border-color: -fx-border-medium;
+}
+
+.root.dark .combo-box {
+  -fx-background-color: #34495e;
+  -fx-border-color: #4a5159;
+}
+
+.combo-box .list-cell {
+  -fx-text-fill: -fx-text-base;
+  -fx-background-color: transparent;
+}
+
+/* ListView */
+.list-view {
+  -fx-background-color: transparent;
+  -fx-padding: 5;
+  -fx-background-insets: 0;
 }
 
 .list-cell {
-    -fx-padding: 6 12 6 12;
-    -fx-background-color: transparent;
+  -fx-padding: 8 12;
+  -fx-background-color: transparent;
 }
 
-/* Card styling and hover moved from code to CSS */
+/* Карточка новости с тенями и анимациями */
 .card {
-    -fx-background-color: #ffffff;
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-border-color: #dfe6e9;
-    -fx-border-width: 1;
-    -fx-effect: dropshadow(three-pass-box, rgba(44,62,80,0.07), 4, 0, 0, 2);
-}
-.card:hover {
-    -fx-background-color: #dfe6e9;
-    -fx-border-color: #b2bec3;
-}
-.root.dark .card {
-    -fx-background-color: #2f3640;
-    -fx-border-color: #3d3d3d;
-    -fx-effect: none;
-}
-.root.dark .card:hover {
-    -fx-background-color: #353b48;
-    -fx-border-color: #4b4b4b;
+  -fx-background-color: -fx-card-bg;
+  -fx-background-radius: 12px;
+  -fx-border-radius: 12px;
+  -fx-border-color: -fx-border-light;
+  -fx-border-width: 1px;
+  -fx-padding: 16px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 6, 0, 0, 3);
+  -fx-transition: all 0.2s ease;
 }
 
-.progress-indicator {
-    -fx-progress-color: #0984e3;
+.list-cell:hover .card {
+  -fx-background-color: -fx-card-hover-bg;
+  -fx-border-color: -fx-card-hover-border;
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 5);
+  -fx-translate-y: -1px;
 }
 
-/* Status bar */
+/* Тексты карточки */
+.title-text {
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-fill: -fx-text-header;
+}
+
+.meta-text {
+  -fx-font-size: 12px;
+  -fx-fill: -fx-text-muted;
+}
+
+.desc-text {
+  -fx-font-size: 14px;
+  -fx-fill: -fx-text-muted;
+}
+
+/* Статус-бар */
 .status-bar {
-    -fx-background-color: linear-gradient(to bottom, rgba(223,230,233,0.6), rgba(223,230,233,0.2));
-    -fx-border-color: #dfe6e9;
-    -fx-border-width: 1 0 0 0;
+  -fx-background-color: -fx-status-bg;
+  -fx-border-color: -fx-border-light;
+  -fx-border-width: 1 0 0 0;
 }
-.root.dark .status-bar {
-    -fx-background-color: linear-gradient(to bottom, rgba(53,59,72,0.8), rgba(47,54,64,0.4));
-    -fx-border-color: #3d3d3d;
-}
+
 .status-label {
-    -fx-text-fill: #636e72;
+  -fx-text-fill: -fx-text-base;
 }
-.root.dark .status-label {
-    -fx-text-fill: #b2bec3;
+
+/* Прогресс-индикатор */
+.progress-indicator {
+  -fx-progress-color: -fx-accent;
+}
+
+/* Контекстное меню */
+.context-menu {
+  -fx-background-color: -fx-card-bg;
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-border-color: -fx-border-light;
+  -fx-padding: 5;
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);
+}
+
+.menu-item {
+  -fx-padding: 8 12;
+  -fx-background-radius: 4;
+}
+
+.menu-item:focused {
+  -fx-background-color: -fx-accent;
+}
+
+.menu-item:focused .label {
+  -fx-text-fill: white;
+}
+
+/* Checkbox для тёмной темы */
+.check-box {
+  -fx-text-fill: -fx-text-base;
+}
+
+.check-box .box {
+  -fx-background-color: white;
+  -fx-border-color: -fx-border-medium;
+  -fx-border-radius: 3px;
+  -fx-background-radius: 3px;
+}
+
+.root.dark .check-box .box {
+  -fx-background-color: #34495e;
+  -fx-border-color: #4a5159;
+}
+
+.check-box:selected .mark {
+  -fx-background-color: white;
+}
+
+.check-box:selected .box {
+  -fx-background-color: -fx-accent;
+  -fx-border-color: -fx-accent;
+}
+
+/* Плейсхолдер */
+.list-view .placeholder .label {
+  -fx-text-fill: -fx-text-muted;
+  -fx-font-size: 16px;
+}
+
+/* Белый текст в тёмной теме - все элементы */
+.root.dark {
+  -fx-text-base-color: white;
+}
+
+.root.dark .label,
+.root.dark .check-box,
+.root.dark .radio-button,
+.root.dark .hyperlink,
+.root.dark .text-input,
+.root.dark .list-cell,
+.root.dark .combo-box-base {
+  -fx-text-fill: white;
+}
+
+.root.dark .title-text {
+  -fx-fill: #ecf0f1;
+}
+
+.root.dark .meta-text,
+.root.dark .desc-text {
+  -fx-fill: #b2bec3;
+}
+
+/* Улучшенный скроллбар */
+.scroll-bar {
+  -fx-background-color: transparent;
+  -fx-pref-width: 12px;
+}
+
+.scroll-bar .thumb {
+  -fx-background-color: rgba(99, 110, 114, 0.5);
+  -fx-background-radius: 6px;
+}
+
+.root.dark .scroll-bar .thumb {
+  -fx-background-color: rgba(178, 190, 195, 0.5);
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+  -fx-opacity: 0;
+  -fx-padding: 0 0 0 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+  -fx-shape: " ";
+  -fx-padding: 0;
 }

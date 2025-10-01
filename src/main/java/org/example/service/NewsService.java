@@ -40,6 +40,38 @@ public class NewsService {
             "https://www.espn.com/espn/rss/news"
     );
 
+    private static final List<String> TECHNOLOGY_FEEDS = List.of(
+            "https://feeds.reuters.com/reuters/technologyNews",
+            "https://feeds.bbci.co.uk/news/technology/rss.xml",
+            "http://rss.cnn.com/rss/edition_technology.rss",
+            "https://techcrunch.com/feed/",
+            "https://www.wired.com/feed/"
+    );
+
+    private static final List<String> SCIENCE_FEEDS = List.of(
+            "https://feeds.reuters.com/reuters/scienceNews",
+            "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml",
+            "https://www.sciencedaily.com/rss/all.xml",
+            "https://www.nature.com/nature.rss",
+            "https://feeds.feedburner.com/oreilly/radar"
+    );
+
+    private static final List<String> BUSINESS_FEEDS = List.of(
+            "https://feeds.reuters.com/reuters/businessNews",
+            "https://feeds.bbci.co.uk/news/business/rss.xml",
+            "http://rss.cnn.com/rss/money_latest.rss",
+            "https://feeds.bloomberg.com/markets/news.rss",
+            "https://www.ft.com/rss/home"
+    );
+
+    private static final List<String> HEALTH_FEEDS = List.of(
+            "https://feeds.reuters.com/reuters/health",
+            "https://feeds.bbci.co.uk/news/health/rss.xml",
+            "http://rss.cnn.com/rss/cnn_health.rss",
+            "https://www.medicalnewstoday.com/rss",
+            "https://www.healthline.com/rss"
+    );
+
     private final HttpClient client = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(10))
             .build();
@@ -57,10 +89,18 @@ public class NewsService {
         List<String> feeds = switch (cat) {
             case "politics" -> POLITICS_FEEDS;
             case "sports" -> SPORTS_FEEDS;
+            case "technology" -> TECHNOLOGY_FEEDS;
+            case "science" -> SCIENCE_FEEDS;
+            case "business" -> BUSINESS_FEEDS;
+            case "health" -> HEALTH_FEEDS;
             default -> {
                 List<String> all = new ArrayList<>();
                 all.addAll(POLITICS_FEEDS);
                 all.addAll(SPORTS_FEEDS);
+                all.addAll(TECHNOLOGY_FEEDS);
+                all.addAll(SCIENCE_FEEDS);
+                all.addAll(BUSINESS_FEEDS);
+                all.addAll(HEALTH_FEEDS);
                 yield all;
             }
         };
@@ -126,6 +166,10 @@ public class NewsService {
         return switch (c) {
             case "политика", "politics" -> "politics";
             case "спорт", "sports" -> "sports";
+            case "технологии", "technology" -> "technology";
+            case "наука", "science" -> "science";
+            case "бизнес", "business" -> "business";
+            case "здоровье", "health" -> "health";
             default -> "all";
         };
     }
@@ -320,4 +364,3 @@ public class NewsService {
         }
     }
 }
-
